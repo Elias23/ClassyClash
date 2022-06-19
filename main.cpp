@@ -12,8 +12,7 @@ int main(int argc, char const *argv[])
     Vector2 mapPos{0, 0};
 
     Texture2D map = LoadTexture("sproutLands/WorldMap30x30.png");
-    Character knight{};
-    knight.setScreenPos(Vector2{screenWidth, screenHeight});
+    Character knight{Vector2{screenWidth, screenHeight}};
 
     // animation variables
 
@@ -25,6 +24,11 @@ int main(int argc, char const *argv[])
         //----------------------------------------------------------------------------------
         knight.update(deltaTime);
         mapPos = Vector2Scale(knight.getWorldPos(), -1.f);
+        Vector2 knightWorldPos = knight.getWorldPos();
+        if (knightWorldPos.x < 0 || knightWorldPos.y < 0 || knightWorldPos.x + screenWidth > map.width * 4.f || knightWorldPos.y + screenHeight > map.height * 4.f)
+        {
+            knight.undoMovement();
+        }
         //----------------------------------------------------------------------------------
         // Draw
         //----------------------------------------------------------------------------------
@@ -33,6 +37,7 @@ int main(int argc, char const *argv[])
         // Draw Map
         DrawTextureEx(map, mapPos, 0, 4, WHITE);
         knight.draw();
+
         EndDrawing();
     }
     UnloadTexture(map);

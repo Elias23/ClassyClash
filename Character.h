@@ -3,10 +3,11 @@
 class Character
 {
 public:
-    Vector2 getWorldPos() const { return worldPos; }
-    void setScreenPos(Vector2 screenPos);
+    Character(Vector2 winSize);
+    Vector2 getWorldPos() const { return worldPos; };
     void update(float dt);
     void draw();
+    void undoMovement();
 
 private:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -14,7 +15,9 @@ private:
     Texture2D run{LoadTexture("characters/knight_run_spritesheet.png")};
     Vector2 screenPos{};
     Vector2 worldPos{};
-
+    Vector2 worldPosLastFrame{};
+    float width{};
+    float height{};
     // 1 : facing right, -1 : facing left
     float rightLeft = 1;
     // animation

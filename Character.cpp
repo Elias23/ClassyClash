@@ -1,11 +1,13 @@
 #include "Character.h"
 #include "rayMath.h"
 
-void Character::setScreenPos(Vector2 winSize)
+Character::Character(Vector2 winSize)
 {
     screenPos = Vector2{
         winSize.x / 2.0f - 4.0f * (0.5f * (float)texture.width / 6.0f),
         winSize.y / 2.0f - 4.0f * (0.5f * (float)texture.height)};
+    width = texture.width / frameCount;
+    height = texture.height;
 };
 
 void Character::update(float dt)
@@ -13,6 +15,7 @@ void Character::update(float dt)
     Vector2 direction{0, 0};
     direction.x = 0;
     direction.y = 0;
+    worldPosLastFrame = worldPos;
 
     if (IsKeyDown(KEY_A))
         direction.x -= 1;
@@ -45,7 +48,12 @@ void Character::update(float dt)
 void Character::draw()
 {
     // Draw Knight
-    Rectangle source{currentFrame * texture.width / 6.f, 0.0f, rightLeft * (float)texture.width / 6.f, (float)texture.height};
-    Rectangle dest{screenPos.x, screenPos.y, 4.0f * (float)texture.width / 6.f, 4.0f * (float)texture.height};
+    Rectangle source{currentFrame * width, 0.0f, rightLeft * width, height};
+    Rectangle dest{screenPos.x, screenPos.y, 4.0f * width, 4.0f * height};
     DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
-};
+}
+
+void Character::undoMovement()
+{
+    worldPos = worldPosLastFrame;
+}
