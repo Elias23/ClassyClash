@@ -5,20 +5,23 @@
 class BaseCharacter
 {
 public:
-    BaseCharacter(/* args */);
+    BaseCharacter(Vector4 collision = Vector4{});
     Vector2 getWorldPos() const { return worldPos; };
     virtual void update(float dt);
-    void draw();
+    virtual void draw();
     void undoMovement();
-    Rectangle getCollisionRectangle();
+    Rectangle getCollisionRectangle() const;
+    virtual Vector2 getScreenPos() const = 0;
+    bool getAlive() const { return alive; };
+    void setAlive(bool alive) { this->alive = alive; };
 
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
     Texture2D idle{LoadTexture("characters/knight_idle_spritesheet.png")};
     Texture2D run{LoadTexture("characters/knight_run_spritesheet.png")};
-    Vector2 screenPos{};
     Vector2 worldPos{};
     Vector2 worldPosLastFrame{};
+    Vector4 collisionOffset{};
     float width{};
     float height{};
     // 1 : facing right, -1 : facing left
@@ -28,8 +31,12 @@ protected:
     int currentFrame = 0;
     const int frameCount = 6;
     const float frameTime = 1.0f / 12.f;
-    const float speed = 4.f;
+    float speed = 4.f;
     const float scale = 4.f;
+    Vector2 velocity{};
+
+private:
+    bool alive{true};
 };
 
 #endif // BASE_CHARACTER_H
